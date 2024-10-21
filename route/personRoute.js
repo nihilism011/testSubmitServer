@@ -42,26 +42,16 @@ router
   })
   .put((req, res) => {
     const id = req.params.id;
-    let gender = null;
-    const query2 = "SELECT GENDER FROM TBL_PERSON WHERE ID = ?";
-    connection.query(query2, [id], (err, results) => {
-      gender = console.log(results[0].GENDER);
-      let reGender = null;
-      if (gender == "M") {
-        reGender = "F";
-      } else {
-        reGender = "M";
+    const { gender } = req.body;
+    console.log(gender);
+    const query = "UPDATE TBL_PERSON SET GENDER = ? WHERE ID = ? ";
+    connection.query(query, [gender, id], (err, results) => {
+      if (err) {
+        console.error("쿼리 실행 실패:", err);
+        res.json(false);
+        return;
       }
-      console.log(reGender);
-      const query = "UPDATE TBL_PERSON SET GENDER = ? WHERE ID = ? ";
-      connection.query(query, [reGender, id], (err, results) => {
-        if (err) {
-          console.error("쿼리 실행 실패:", err);
-          res.json(false);
-          return;
-        }
-        res.json(true);
-      });
+      res.json(true);
     });
   });
 
